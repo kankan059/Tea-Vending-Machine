@@ -1,0 +1,87 @@
+.middlee {
+    /* Rectangle 26 */
+
+    /* position: absolute; */
+    display: flex;
+    flex-direction: column;
+    padding: 7vw;
+    width: 80vw;
+    height: 40vw;
+
+    background: rgba(8, 84, 53, 0.86);
+    border-radius: 20px;
+    position: absolute;
+    top: 58%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+}
+
+#para {
+    font-size: 2vw;
+}
+
+.middlee #buttons {
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.middlee #buttons button {
+    /* Rectangle 23 */
+
+    /* position: absolute; */
+    gap: 20px;
+    width: 30vw;
+    height: 6vw;
+
+    background: rgba(204, 225, 132, 0.47);
+    box-shadow: 0px 4px 0px 2px rgba(0, 0, 0, 0.65);
+    border-radius: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* Energize Me */
+    font-family: 'Milk & Tea';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 4.7vw;
+    line-height: 66px;
+    text-align: center;
+
+    color: #FDE057;
+
+    border: 1px solid #000000;
+    cursor: pointer;
+}
+
+
+.middlee #buttons button:nth-of-type(2) {
+    color: orangered;
+}
+
+.middlee #buttons button:nth-of-type(3) {
+    color: greenyellow;
+}
+
+.middlee #buttons button:nth-of-type(4) {
+    color: white;
+}
+
+@media (max-width : 660px) {
+    .middlee {
+
+    display: flex;
+    flex-direction: column;
+    padding: 7vw;
+    width: 80vw;
+    height: 80vw;
+
+}
+    .middlee #buttons{
+        align-items: center;
+        flex-direction: column;
+    }
+}
