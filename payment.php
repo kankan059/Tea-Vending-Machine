@@ -53,8 +53,8 @@
                     </div>
 
                     <section class="approve">
-                        <button>cencel</button>
-                        <button>done</button>
+                        <button>cancel</button>
+                        <button class="done">done</button>
                     </section>
                 </div>
             </section>
