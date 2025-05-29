@@ -80,40 +80,57 @@ function buttonResponse() {
   const go = document.querySelector(".go"); //when the go button click
   if (go) {
     go.addEventListener("click", () => {
+      if (selectedArray.length === 0) {
+        alert("Please Select Atleast One Tea 🍵");
+        return;
+      }
       fetch("database/save-tea.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(selectedArray),
       })
-        .then((res) => res.text())
-        .then((data) => console.log("response:", data))
-        .then((order_id)=>{
-          console.log(order_id);
-          
-          // window.location.href = `payment.php?order_id=${order_id}`;
-
-        })
-
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("response:", data.order_id);
+          window.location.href = `payment.php?order_id=${data.order_id}`;
+        });
     });
-
   }
+
+  const cancel = document.querySelector(".cancelPayment");
+  if (cancel) {
+    document.addEventListener("DOMContentLoaded", () => [
+      cancel.addEventListener("click", () => {
+        fetch("php_files/destroy.php", {
+          method: "POST",
+        }).then(() => {
+          // window.location.href = "third-page.php";
+          console.log("successfuly go destroyed the session form js");
+          window.location.href = "second-page.php"
+        });
+      }),
+    ]);
+  }
+
+  const don = document.querySelector('.donePayment')
+  if(don){
+    don.addEventListener('click' , ()=>{
+      if(document.querySelector('#qr-code').classList !== "active"){
+        document.querySelector('#qr-code  img').style.top = '0';
+        // document.querySelector('#qr-code').classList.add('active');
+      }
+      else{
+        document.querySelector('#qr-code  img').style.top = '-100';
+      }
+      if(document.querySelector('#qr-code  img')){
+        document.querySelector('#qr-code  img').addEventListener('click',()=>{
+          document.querySelector('#qr-code  img').style.top = '-100';
+          // document.querySelector('#qr-code').classList.remove('active');
   
-    const don = document.querySelector('.done')
-    if(don){
-      document.addEventListener('DOMContentLoaded', ()=>[
-        don.addEventListener('click' , ()=>{
-          fetch('php_files/destroy.php',{
-            method : 'POST'
-          })
-          .then(()=>{
-            // window.location.href = "third-page.php";
-            console.log('successfuly go destroyed the session form js')
-  
-  
-          })
         })
-      ])
-    }
+      }
+    })
+  }
 }
 
 let slide = () => {
@@ -165,6 +182,7 @@ function selectedteas() {
           sugar: sugarLevel + "%",
         });
       }
+
       console.log(selectedArray);
     }
   });
@@ -228,31 +246,31 @@ function incrementQuantity() {
   //     });
   //   });
   // }
-  if(document.querySelector("#selected-list")){
-  document.querySelector("#selected-list").addEventListener("click", (e) => {
-    if (e.target.classList.contains("plusQuntity")) {
-      const qt = e.target.parentElement.querySelector(".qt");
-      const rs = e.target.closest("#selected").querySelector(".rs");
+  if (document.querySelector("#selected-list")) {
+    document.querySelector("#selected-list").addEventListener("click", (e) => {
+      if (e.target.classList.contains("plusQuntity")) {
+        const qt = e.target.parentElement.querySelector(".qt");
+        const rs = e.target.closest("#selected").querySelector(".rs");
 
-      let count = parseInt(qt.textContent);
-      count++;
-      qt.textContent = count;
-      let basePrice = parseInt(rs.getAttribute('data-base'));
-      rs.textContent = basePrice * count;
-    }
-    
-    if (e.target.classList.contains("minusQuntity")) {
-      const qt = e.target.parentElement.querySelector(".qt");
-      const rs = e.target.closest("#selected").querySelector(".rs");
+        let count = parseInt(qt.textContent);
+        count++;
+        qt.textContent = count;
+        let basePrice = parseInt(rs.getAttribute("data-base"));
+        rs.textContent = basePrice * count;
+      }
 
-      let count = parseInt(qt.textContent);
-      if (count > 0) count--;
-      qt.textContent = count;
-      let basePrice = parseInt(rs.getAttribute('data-base'));
-      rs.textContent = basePrice * count;
-    }
-  });
-}
+      if (e.target.classList.contains("minusQuntity")) {
+        const qt = e.target.parentElement.querySelector(".qt");
+        const rs = e.target.closest("#selected").querySelector(".rs");
+
+        let count = parseInt(qt.textContent);
+        if (count > 0) count--;
+        qt.textContent = count;
+        let basePrice = parseInt(rs.getAttribute("data-base"));
+        rs.textContent = basePrice * count;
+      }
+    });
+  }
 }
 
 let filteringTea = () => {
@@ -296,12 +314,12 @@ function fetchTea() {
     .then((res) => res.json())
     .then((data) => {
       const urlParams = new URLSearchParams(window.location.search);
-      const currentOrderID = urlParams.get('order_id');
+      const currentOrderID = urlParams.get("order_id");
       let clutter = "";
       data.forEach((item) => {
         // console.log(item);
-        if(item.order_id === currentOrderID )
-        clutter += ` <div id="selected">
+        if (item.order_id === currentOrderID)
+          clutter += ` <div id="selected">
                             <h3>${item.tea_name}</h3>
                             <div id="quantity">
                                 <img class="minusQuntity" src="App Ladoo/-.svg" alt="plus">
