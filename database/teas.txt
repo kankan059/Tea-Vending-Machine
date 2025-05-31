@@ -1,1 +1,12 @@
-1
+Array
+(
+    [0] => Array
+        (
+            [name] => Geen tea
+            [quantity] => 150 ml
+            [cup] => 1
+            [price] => 20
+            [sugar] => 50%
+        )
+
+)
