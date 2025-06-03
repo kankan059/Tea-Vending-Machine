@@ -28,8 +28,9 @@
             </section>
             <section class="payment">
                 <div id="qr-code">
-                    <div class="img"></div>
-                    <img src="https://images.unsplash.com/photo-1743071441939-9ec2b3352b54?q=80&w=689&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                    <div class="img">
+                        <img src="https://images.unsplash.com/photo-1743071441939-9ec2b3352b54?q=80&w=689&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                    </div>
                 </div>
                 <div class="card">
                     <h3>your tea card</h3>
@@ -47,19 +48,20 @@
                                 <span class="qt">1</span>
                                 <img class="plusQuntity" src="App Ladoo/+.svg" alt="minus">
                             </div>
-                            <h3><span class="rs">20</span> RS</h3>
+                            <h3><span class="rs" data-base="20">20</span> RS</h3>
                         </div>
 
                     </div>
 
                     <section class="approve">
-                        <button>cancel</button>
-                        <button class="done">done</button>
+                        <button class="cancelPayment">cancel</button>
+                        <button class="donePayment">done</button>
                     </section>
                 </div>
             </section>
         </div>
     </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" integrity="sha512-NcZdtrT77bJr4STcmsGAESr06BYGE8woZdSdEgqnpyqac7sugNO+Tr4bGwGF3MsnEkGKhU2KL2xh6Ec+BqsaHA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="javascript files/script.js"></script>
 
     </html>
