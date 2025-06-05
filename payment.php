@@ -29,7 +29,7 @@
             <section class="payment">
                 <div id="qr-code">
                     <div class="img">
-                        <img src="https://images.unsplash.com/photo-1743071441939-9ec2b3352b54?q=80&w=689&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="">
+                        <img src="" alt="qr code heere">
                     </div>
                 </div>
                 <div class="card">
