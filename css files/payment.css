@@ -154,23 +154,19 @@
 
 
 /* qr code */
-#qr-code{
-    z-index: 30;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+#qr-code .img {
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: inline-block;
+  opacity: 0;
+  /* pointer-events: auto; */
 }
-#qr-code  img{
-    position: absolute;
-    height: 40vw;
-    width: 40vw;
-    top: -100vw;
-    /* top: 0; */
-}
-#qr-code  .img{
-    position: absolute;
-    height: 40vw;
-    width: 40vw;
-    top: -100vw;
-    /* top: 0; */
+
+#qr-code .img img {
+  height: 40vw;
+  width: 40vw;
+  cursor: pointer;
 }
