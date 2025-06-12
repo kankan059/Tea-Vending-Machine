@@ -74,7 +74,21 @@ const teaVariants = [
 ];
 
 let selectedArray = [];
+let updatedArray = [];
 let sugarLevel = 50;
+let incrementPrice;
+let totalPrice;
+let updatedTeaName = [];
+// UPDATE `tea_orders` SET `quantity` = '250', `cup` = '2', `price` = '50' WHERE `tea_orders`.`sno` = 63;
+let updatePrice = () => {
+  fetch("php_files/updateTea.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedArray),
+  })
+    .then((res) => res, json())
+    .then((data) => console.log(data));
+};
 
 function buttonResponse() {
   const go = document.querySelector(".go"); //when the go button click
@@ -106,30 +120,55 @@ function buttonResponse() {
         }).then(() => {
           // window.location.href = "third-page.php";
           console.log("successfuly go destroyed the session form js");
-          window.location.href = "second-page.php"
+          window.location.href = "second-page.php";
         });
       }),
     ]);
   }
 
-  const don = document.querySelector('.donePayment')
-  if(don){
-    don.addEventListener('click' , ()=>{
-      if(document.querySelector('#qr-code').classList !== "active"){
-        document.querySelector('#qr-code  img').style.top = '0';
-        // document.querySelector('#qr-code').classList.add('active');
-      }
-      else{
-        document.querySelector('#qr-code  img').style.top = '-100';
-      }
-      if(document.querySelector('#qr-code  img')){
-        document.querySelector('#qr-code  img').addEventListener('click',()=>{
-          document.querySelector('#qr-code  img').style.top = '-100';
-          // document.querySelector('#qr-code').classList.remove('active');
-  
-        })
-      }
-    })
+  const don = document.querySelector(".donePayment");
+  const qrBox = document.querySelector("#qr-code .img");
+  const qrImg = document.querySelector("#qr-code .img img");
+
+  if (don) {
+    don.addEventListener("click", () => {
+      //total price and store at the global total price
+      fetch("php_files/total_price.php")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data.total);
+        totalPrice = data.total;
+      });
+      //fetch the updated tea
+      fetch("php_files/updateTea.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedArray),
+      })
+      .then((res) => res.text())
+      .then((data) => console.log(data));
+      qrcode();
+      
+      //this is the animation use for qr code
+      gsap.fromTo(
+        qrBox,
+        { y: -200, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1, ease: "power2.out" }
+      );
+      // qrBox.classList.add("active");
+    });
+    
+    qrImg.addEventListener("click", () => {
+      gsap.to(qrBox, {
+        y: -200,
+        opacity: 0,
+        duration: 0.8,
+        ease: "power2.in",
+        // onComplete: () => {
+        //   qrBox.classList.remove("active");
+        // },
+      });
+    });
   }
 }
 
@@ -172,8 +211,12 @@ function selectedteas() {
         cup = item.cup;
       });
 
-      let duplicatte = selectedArray.some((selecttt) => selecttt.name === name);
-      if (!duplicatte) {
+      // let duplicatte = selectedArray.some((selecttt) => selecttt.name === name); //it compare all element from the array even they wiill not met
+      let index = selectedArray.findIndex((idx) => idx.name === name);
+      console.log(index);
+      if (index !== -1) {
+        selectedArray.splice(index, 1); //delete one element from index 1
+      } else {
         selectedArray.push({
           name,
           quantity,
@@ -182,6 +225,9 @@ function selectedteas() {
           sugar: sugarLevel + "%",
         });
       }
+
+      // if (!duplicatte) {
+      // }
 
       console.log(selectedArray);
     }
@@ -207,68 +253,52 @@ function teaOptions(teas) {
 }
 
 function incrementQuantity() {
-  // const allPlusSymbol = document.querySelectorAll(".plusQuntity");
-  // const allMinusSymbol = document.querySelectorAll(".minusQuntity");
-  // const quantity = document.querySelector(".qt");
-  // const pricee = document.querySelector(".rs");
-  // let price = 20;
-  // let count = 1;
-  // let clutter = "";
-  // function updateHtm() {
-  //   clutter += `<div id="selected"><h3>purple tea</h3>
-  //                           <div id="quantity">
-  //                               <img class="minusQuntity" src="App Ladoo/-.svg" alt="plus">
-  //                               <span class="qt">${count}</span>
-  //                               <img class="plusQuntity" src="App Ladoo/+.svg" alt="minus">
-  //                           </div>
-  //                           <h3>300 RS</h3></div>`;
-  //   document.querySelector("#selected-list").innerHTML = clutter;
-  // }
-  // if (allPlusSymbol && allMinusSymbol) {
-  //   allPlusSymbol.forEach((plusSymbol) => {
-  //     plusSymbol.addEventListener("click", () => {
-  //       count++;
-  //       quantity.textContent = count;
-  //       pricee.textContent = price * count;
-  //     });
-  //   });
-  //   allMinusSymbol.forEach((minusSymbol) => {
-  //     minusSymbol.addEventListener("click", () => {
-  //       if (count == 0) {
-  //         count = 0;
-  //         quantity.textContent = count;
-  //         pricee.textContent = price * count;
-  //       } else {
-  //         count--;
-  //         pricee.textContent = price * count;
-  //         quantity.textContent = count;
-  //       }
-  //     });
-  //   });
-  // }
+  //here we used event deligation
   if (document.querySelector("#selected-list")) {
     document.querySelector("#selected-list").addEventListener("click", (e) => {
-      if (e.target.classList.contains("plusQuntity")) {
-        const qt = e.target.parentElement.querySelector(".qt");
-        const rs = e.target.closest("#selected").querySelector(".rs");
-
+      //when increment the price
+      if (
+        e.target.classList.contains("plusQuntity") ||
+        e.target.classList.contains("minusQuntity")
+      ) {
+        const qt = e.target.parentElement.querySelector(".qt"); //this is quantity tag
+        const rs = e.target.closest("#selected").querySelector(".rs"); //this is rupee tag
+        const teaName = e.target
+          .closest("#selected")
+          .querySelector("h3").textContent; //this is name of the targeted tea
+        //if same name exist
+        const existingIndex = updatedTeaName.findIndex((item) => {
+          item.name === teaName;
+        });
+        let quantityMl = 250;
         let count = parseInt(qt.textContent);
-        count++;
+        if (e.target.classList.contains("plusQuntity")) {
+          count++;
+        }
+        if (e.target.classList.contains("minusQuntity")) {
+          if (count > 0) count--;
+        }
         qt.textContent = count;
         let basePrice = parseInt(rs.getAttribute("data-base"));
-        rs.textContent = basePrice * count;
-      }
+        incrementPrice = basePrice * count;
+        quantityMl *= count;
+        rs.textContent = incrementPrice;
 
-      if (e.target.classList.contains("minusQuntity")) {
-        const qt = e.target.parentElement.querySelector(".qt");
-        const rs = e.target.closest("#selected").querySelector(".rs");
-
-        let count = parseInt(qt.textContent);
-        if (count > 0) count--;
-        qt.textContent = count;
-        let basePrice = parseInt(rs.getAttribute("data-base"));
-        rs.textContent = basePrice * count;
+        //fetch and update the details
+        if (existingIndex > -1) {
+          updatedArray[existingIndex].quantitycup = count;
+          updatedArray[existingIndex].quantityml = quantityMl;
+          updatedArray[existingIndex].price = incrementPrice;
+        } else {
+          updatedArray.push({
+            name: teaName,
+            quantitycup: count,
+            price: incrementPrice,
+            quantityml: quantityMl,
+          });
+        }
       }
+      console.log(updatedArray);
     });
   }
 }
@@ -316,6 +346,7 @@ function fetchTea() {
       const urlParams = new URLSearchParams(window.location.search);
       const currentOrderID = urlParams.get("order_id");
       let clutter = "";
+
       data.forEach((item) => {
         // console.log(item);
         if (item.order_id === currentOrderID)
@@ -335,6 +366,57 @@ function fetchTea() {
     });
 }
 
+let gsappp = () => {
+  let allBoxes = document.querySelector(".right-side");
+  if(allBoxes){
+    document.addEventListener("DOMContentLoaded", () => {
+      allBoxes.addEventListener("click", (e) => {
+        let theBox = e.target.closest(".box");
+        // theBox.classList.add('activeBox');
+        if (theBox && !e.target.classList.contains("activeButton")) {
+          gsap.to(theBox, {
+            backgroundColor: "#6d623a",
+            scale: 0.98,
+            duration: 0.32,
+          });
+          e.target.classList.add("activeButton");
+        } else {
+          gsap.to(theBox, {
+            backgroundColor: "#f1dc8d",
+            scale: 1,
+            duration: 0.32,
+          });
+          e.target.classList.remove("activeButton");
+        }
+      });
+    });
+  }
+};
+
+let qrcode = () => {
+  fetch("php_files/qrcode.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      amount: totalPrice * 100, // paise me bhejna hai
+      name: "kongkon ray", // optional
+      contact: "6003963538", // optional
+    }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if(data.short_url){
+        let qrLink = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+          data.short_url
+        )}&size=200x200`;
+        document.querySelector("#qr-code .img img").src = qrLink;
+      }
+      else {
+        alert('not found')
+      }
+    });
+};
+
 teaOptions(teaVariants);
 incrementQuantity();
 buttonResponse();
@@ -342,3 +424,4 @@ selectedteas();
 slide();
 filteringTea();
 fetchTea();
+gsappp();

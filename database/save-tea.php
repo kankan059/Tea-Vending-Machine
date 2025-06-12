@@ -1,10 +1,12 @@
 <?php
 require '_dbconnect.php';
 session_start();
+header('Content-type: application/json'); //its important for json
 $order_id = uniqid('order_');
+$_SESSION['order_id'] = $order_id;
 $data = json_decode(file_get_contents('php://input'), true);
-file_put_contents('teas.txt', print_r($data), true);
-echo 'success fully recived';
+file_put_contents('teas.txt', print_r($data , true));
+// echo 'success fully recived';
 
 if ($data) {
     foreach ($data as $tea) {
@@ -18,8 +20,6 @@ if ($data) {
         
         $connect->query($sql);
     }
-    echo "data saved";
-    echo $order_id;
-} else {
-    echo "not saved";
-}
+    echo json_encode(["order_id" => $order_id]); //i use this so the header is so important
+    // header('location: payment.php?order_id=$order_id');
+} 
